@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bxqp41kgkau3f"
-path="res://.godot/imported/Tilesettest.png-a3fc6f24759dad530231d21fecc07d3c.ctex"
+uid="uid://dovxagdbmgaeq"
+path="res://.godot/imported/Sword.png-02f04dadb592d4d6da3d3a983e9c1a58.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scripts/Tilesettest.png"
-dest_files=["res://.godot/imported/Tilesettest.png-a3fc6f24759dad530231d21fecc07d3c.ctex"]
+source_file="res://Assets/Player And Attributes/Sword.png"
+dest_files=["res://.godot/imported/Sword.png-02f04dadb592d4d6da3d3a983e9c1a58.ctex"]
 
 [params]
 
