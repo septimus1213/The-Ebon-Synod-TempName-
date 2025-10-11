@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://bjjyicp8qgi3v"]
+
+[ext_resource type="Script" uid="uid://br88q1qkbxq8o" path="res://Scripts/scr_boss_1/blue_enemy.gd" id="1_v1mpc"]
+[ext_resource type="Texture2D" uid="uid://djl8b2rbc306h" path="res://Assets/sprites_boss1/enemy_blue.png" id="2_xr2dr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_72t8a"]
+size = Vector2(32, 32)
+
+[node name="blue_enemy" type="CharacterBody2D"]
+script = ExtResource("1_v1mpc")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_xr2dr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_72t8a")

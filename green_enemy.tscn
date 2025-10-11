@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://doh1frevge0u6"]
+
+[ext_resource type="Script" uid="uid://deio1im37jmcr" path="res://Scripts/scr_boss_1/green_enemy.gd" id="1_2fnn4"]
+[ext_resource type="Texture2D" uid="uid://bguvm7aiscas1" path="res://Assets/sprites_boss1/enemy_green.png" id="1_rn0dr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2fnn4"]
+size = Vector2(32, 32)
+
+[node name="green_enemy" type="CharacterBody2D"]
+script = ExtResource("1_2fnn4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_rn0dr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_2fnn4")
