@@ -1,18 +1,134 @@
-[gd_scene load_steps=3 format=3 uid="uid://dt27suyijgyho"]
+[gd_scene load_steps=18 format=3 uid="uid://dt27suyijgyho"]
 
-[ext_resource type="Texture2D" uid="uid://b3csylisx5xwy" path="res://pp.png" id="2_ycbe0"]
+[ext_resource type="Script" uid="uid://cj4en2phmgdj7" path="res://Scripts/scr_player/player.gd" id="1_il23p"]
+[ext_resource type="Texture2D" uid="uid://4b3oeqp4auyu" path="res://Assets/Player And Attributes/Knight_walk-Sheet.png" id="2_ycbe0"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_i58a6"]
 size = Vector2(16.625, 16.875)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_i58a6"]
+atlas = ExtResource("2_ycbe0")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ekqqt"]
+atlas = ExtResource("2_ycbe0")
+region = Rect2(16, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eu86c"]
+atlas = ExtResource("2_ycbe0")
+region = Rect2(32, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2ypje"]
+atlas = ExtResource("2_ycbe0")
+region = Rect2(48, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4ob61"]
+atlas = ExtResource("2_ycbe0")
+region = Rect2(128, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_onxj1"]
+atlas = ExtResource("2_ycbe0")
+region = Rect2(112, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fgwp8"]
+atlas = ExtResource("2_ycbe0")
+region = Rect2(80, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pgwn8"]
+atlas = ExtResource("2_ycbe0")
+region = Rect2(96, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_emhys"]
+atlas = ExtResource("2_ycbe0")
+region = Rect2(0, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k0umj"]
+atlas = ExtResource("2_ycbe0")
+region = Rect2(16, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_am052"]
+atlas = ExtResource("2_ycbe0")
+region = Rect2(32, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7ded8"]
+atlas = ExtResource("2_ycbe0")
+region = Rect2(48, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_il23p"]
+atlas = ExtResource("2_ycbe0")
+region = Rect2(0, 32, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cbwd1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i58a6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ekqqt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eu86c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2ypje")
+}],
+"loop": true,
+"name": &"WalkDown",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4ob61")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_onxj1")
+}],
+"loop": true,
+"name": &"WalkLeft",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fgwp8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pgwn8")
+}],
+"loop": true,
+"name": &"WalkRight",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_emhys")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k0umj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_am052")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7ded8")
+}],
+"loop": true,
+"name": &"WalkUp",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_il23p")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
 [node name="Player" type="CharacterBody2D"]
 z_index = 5
 collision_layer = 2
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-3.0517578e-05, 0)
-scale = Vector2(0.25585923, 0.25390628)
-texture = ExtResource("2_ycbe0")
+script = ExtResource("1_il23p")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_i58a6")
@@ -21,5 +137,11 @@ shape = SubResource("RectangleShape2D_i58a6")
 zoom = Vector2(2, 2)
 
 [node name="Timer" type="Timer" parent="."]
+
+[node name="Walking" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_cbwd1")
+animation = &"WalkUp"
+frame_progress = 0.3491776
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
