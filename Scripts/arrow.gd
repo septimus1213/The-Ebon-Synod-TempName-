@@ -9,7 +9,6 @@ var direction = Vector2.ZERO
 func _ready():
 	timer.wait_time = lifetime
 	timer.one_shot = true
-	add_child(timer)
 	timer.start()
 	timer.connect("timeout", Callable(self, "queue_free"))
 

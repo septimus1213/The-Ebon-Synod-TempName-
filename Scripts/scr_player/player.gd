@@ -6,6 +6,9 @@ extends CharacterBody2D
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 @onready var timer: Timer = $Timer
 @onready var animated_sprite_2d: AnimatedSprite2D = $Walking
+@onready var player_with_sword: CharacterBody2D = $"../PlayerWithSword"
+@onready var player_with_bow: CharacterBody2D = $"../PlayerWithBow"
+@onready var player: CharacterBody2D = $"."
 
 
 var is_dash_ready = true
@@ -41,6 +44,8 @@ func _physics_process(_delta):
 		collision_shape_2d.disabled = false
 		is_dash_ready = false
 		timer.start()
+		player_with_bow.position = player.position
+		player_with_sword.position = player.position
 		
 	move_and_slide()
 

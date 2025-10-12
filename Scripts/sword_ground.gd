@@ -5,13 +5,12 @@ extends Area2D
 @onready var sword_on_ground: Area2D = $"."
 @onready var player: CharacterBody2D = $"../Player"
 @onready var player_with_sword: CharacterBody2D = $"../PlayerWithSword"
-
-
+@onready var player_with_bow: CharacterBody2D = $"../PlayerWithBow"
 
 #  pickup item/sword
 func _process(_delta: float) -> void:
 	var pickup = Input.is_action_just_pressed("Pickup_Item")
-	if pickup and label.visible == true:
+	if pickup and label.visible == true and player_with_bow.visible == false:
 		player_with_sword.position = player.position
 		player_with_sword.visible = true
 		player.visible = false
