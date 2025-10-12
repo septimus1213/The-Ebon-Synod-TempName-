@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://ddb3tulm6png8"]
+
+[ext_resource type="Texture2D" uid="uid://dfnu78d3ets4e" path="res://Assets/Player And Attributes/Arrow.png" id="1_33lt4"]
+[ext_resource type="Script" uid="uid://eqtfpob1jpvf" path="res://Scripts/arrow.gd" id="1_jsoba"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jsoba"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_33lt4")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7aeyj"]
+size = Vector2(8, 5)
+
+[node name="Arrow" type="Area2D"]
+collision_mask = 4
+script = ExtResource("1_jsoba")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, -0.5)
+scale = Vector2(1, 0.875)
+sprite_frames = SubResource("SpriteFrames_jsoba")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_7aeyj")
+
+[node name="Timer" type="Timer" parent="."]

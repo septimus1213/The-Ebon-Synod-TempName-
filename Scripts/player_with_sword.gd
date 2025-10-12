@@ -43,7 +43,7 @@ func _physics_process(_delta):
 # drop item/sword
 func _process(_delta: float) -> void:
 	var drop = Input.is_action_just_pressed("Drop_Item")
-	if drop:
+	if drop and player_with_sword.visible == true :
 		
 		# add normal player back
 		player.position = player_with_sword.global_position

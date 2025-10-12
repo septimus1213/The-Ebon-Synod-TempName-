@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://c14lejl5v303w"]
+
+[ext_resource type="Script" uid="uid://cnnjltay3duyg" path="res://scripts/bow_ground.gd" id="1_ge8sm"]
+[ext_resource type="Texture2D" uid="uid://qr2cpjwm16vg" path="res://Assets/Player And Attributes/Bow.png" id="1_mrkrh"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ge8sm"]
+radius = 5.0990195
+
+[node name="bow_ground" type="Area2D"]
+z_index = 6
+collision_mask = 2
+script = ExtResource("1_ge8sm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ge8sm")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("1_mrkrh")
+
+[node name="Label" type="Label" parent="."]
+visible = false
+offset_left = 1.0
+offset_top = -15.0
+offset_right = 56.0
+offset_bottom = 8.0
+theme_override_font_sizes/font_size = 8
+text = "Press E"
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

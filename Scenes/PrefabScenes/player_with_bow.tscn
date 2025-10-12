@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://to0pjrw8twi0"]
+
+[ext_resource type="Script" uid="uid://b03skseqm82d8" path="res://Scripts/player_with_bow.gd" id="1_5n2hd"]
+[ext_resource type="Texture2D" uid="uid://b3csylisx5xwy" path="res://pp.png" id="2_5n2hd"]
+[ext_resource type="Texture2D" uid="uid://qr2cpjwm16vg" path="res://Assets/Player And Attributes/Bow.png" id="3_5n2hd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i58a6"]
+size = Vector2(16.625, 16.875)
+
+[node name="PlayerWithBow" type="CharacterBody2D"]
+z_index = 5
+collision_layer = 2
+script = ExtResource("1_5n2hd")
+speed = 200.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-3.0517578e-05, 0)
+scale = Vector2(0.25585923, 0.25390628)
+texture = ExtResource("2_5n2hd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_i58a6")
+
+[node name="Bow" type="Area2D" parent="."]
+position = Vector2(13, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Bow"]
+texture_filter = 1
+texture = ExtResource("3_5n2hd")
+
+[node name="Dashtimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="Dashtimer" to="." method="_on_timer_timeout"]
