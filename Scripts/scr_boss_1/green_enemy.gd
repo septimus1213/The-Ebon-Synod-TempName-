@@ -5,7 +5,7 @@ extends CharacterBody2D
 @export var chase_speed = 100.0       
 @export var detection_range = 128.0   
 @export var attack_range = 64.0       
-@export var attack_cooldown = 1.5
+@export var attack_cooldown = 3
 
 var player = null
 var can_attack = true
@@ -88,8 +88,8 @@ func attack():
 	# Check if we actually hit
 	var distance = global_position.distance_to(player.global_position)
 	if distance <= attack_range:
-		print("SWORD HIT! (no damage yet tho)")
-		# player.take_damage(15)  # when we have health
+		print("SWORD HIT!")
+		player.take_damage(100)  # when we have health
 
 func randomize_wander_direction():
 	# Pick a random direction to walk

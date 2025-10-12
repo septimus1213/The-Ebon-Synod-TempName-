@@ -1,5 +1,6 @@
 extends CharacterBody2D
 
+
 @export var DashTimer = 5
 @export var speed = 200.0
 @export var dashspeed = 3000
@@ -9,6 +10,9 @@ extends CharacterBody2D
 @onready var player_with_sword: CharacterBody2D = $"../PlayerWithSword"
 @onready var player_with_bow: CharacterBody2D = $"../PlayerWithBow"
 @onready var player: CharacterBody2D = $"."
+@onready var health_bar: AnimatedSprite2D = $HealthBar
+
+var player_health = 300
 
 
 var is_dash_ready = true
@@ -50,6 +54,17 @@ func _physics_process(_delta):
 	move_and_slide()
 
 
+
 # timer for setting dash to true after x secconds
 func _on_timer_timeout() -> void:
 	is_dash_ready = true
+	
+func take_damage(amount):
+	player_health -= amount
+	if player_health  <= 200 and player_health > 100:
+		health_bar.play("2 hearts")
+	elif player_health <=  100 and player_health != 0:
+		health_bar.play("1 heart")
+	elif player_health == 0:
+		health_bar.play("dead")
+	

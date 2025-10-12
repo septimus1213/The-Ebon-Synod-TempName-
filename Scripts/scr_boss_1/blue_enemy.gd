@@ -99,11 +99,13 @@ func explode():
 	# Check if player is in explosion radius
 	var distance = global_position.distance_to(player.global_position)
 	if distance <= explosion_range:
-		print("PLAYER HIT BY EXPLOSION! (no damage system yet)")
-		# player.take_damage(25)  # big damage
+		print("PLAYER HIT BY EXPLOSION!")
+		player.take_damage(200)  # big damage
 	
 	# Commit sudoku 
 	queue_free()
+
+
 
 func randomize_wander_direction():
 	var angle = randf() * TAU
