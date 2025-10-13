@@ -1,25 +1,28 @@
 extends CharacterBody2D
 
-#values fresh from my ass
-@export var wander_speed = 50.0       
-@export var chase_speed = 100.0       
-@export var detection_range = 128.0   
-@export var attack_range = 64.0       
-@export var attack_cooldown = 3
+var is_hit = false
+var hit_timer = 0.0
+var knockback_velocity = Vector2.ZERO
+var knockback_time = 0.0
+var knockback_duration = 0.15
 
+@export var wander_speed = 50.0
+@export var chase_speed = 100.0
+@export var detection_range = 128.0
+@export var attack_range = 64.0
+@export var attack_cooldown = 3
 @export var max_health = 100
+
 var current_health = 100
 var show_healthbar = false
 var healthbar_timer = 0.0
-
 var player = null
 var can_attack = true
 var attack_timer = 0.0
 
-# Wander variables 
 var wander_direction = Vector2.ZERO
 var wander_timer = 0.0
-var wander_time = 2.0  # change direction every 2 seconds
+var wander_time = 2.0
 
 enum State {
 	WANDERING,
@@ -34,15 +37,18 @@ func _ready():
 	player = get_tree().get_first_node_in_group("player")
 	if player == null:
 		print("GREEN ENEMY: No player?")
-	
-	# Pick random starting wander direction
 	randomize_wander_direction()
 
 func _physics_process(delta):
 	if player == null:
 		return
 	
-	# Update timers
+	if knockback_time > 0:
+		knockback_time -= delta
+		velocity = knockback_velocity
+		move_and_slide()
+		return
+	
 	if not can_attack:
 		attack_timer -= delta
 		if attack_timer <= 0:
@@ -56,89 +62,88 @@ func _physics_process(delta):
 	
 	match current_state:
 		State.WANDERING:
-			
 			velocity = wander_direction * wander_speed
 			move_and_slide()
-			
-			# Spot the player
 			if distance_to_player <= detection_range:
 				current_state = State.CHASING
 		
 		State.CHASING:
-			# Move toward player
 			var direction = (player.global_position - global_position).normalized()
 			velocity = direction * chase_speed
 			move_and_slide()
-			
-			
 			if distance_to_player <= attack_range and can_attack:
 				current_state = State.ATTACKING
 				attack()
-			elif distance_to_player > detection_range * 1.5:  # lost the player, go back to wandering
+			elif distance_to_player > detection_range * 1.5:
 				current_state = State.WANDERING
 				randomize_wander_direction()
 		
 		State.ATTACKING:
-			# Stand still while swinging (could add lunge later)
 			velocity = Vector2.ZERO
-			
-			# After attack, go back to chasing
-			if can_attack:  # cooldown finished
+			if can_attack:
 				current_state = State.CHASING
-				
+
+func _process(delta):
+	if is_hit:
+		hit_timer -= delta
+		if hit_timer <= 0:
+			is_hit = false
+			modulate = Color.WHITE
+		queue_redraw()
+	
 	if show_healthbar:
 		healthbar_timer -= delta
 		if healthbar_timer <= 0:
 			show_healthbar = false
-		queue_redraw()  # trigger _draw() call
+		queue_redraw()
 
 func _draw():
 	if not show_healthbar:
 		return
 	
-	# Draw healthbar above enemy
 	var bar_width = 40
 	var bar_height = 6
 	var bar_offset = Vector2(-bar_width/2, -30)
 	
-	# Background (red)
 	draw_rect(Rect2(bar_offset, Vector2(bar_width, bar_height)), Color.RED)
 	
-	# Foreground (green) - scales with health
 	var health_percent = float(current_health) / float(max_health)
 	draw_rect(Rect2(bar_offset, Vector2(bar_width * health_percent, bar_height)), Color.GREEN)
 	
-	# Border (black)
 	draw_rect(Rect2(bar_offset, Vector2(bar_width, bar_height)), Color.BLACK, false, 1)
+
+func apply_knockback(direction: Vector2, force: float):
+	knockback_velocity = direction * force
+	knockback_time = knockback_duration
 
 func take_damage(amount):
 	current_health -= amount
 	current_health = max(0, current_health)
 	
-	# Show healthbar for 3 seconds
+	is_hit = true
+	hit_timer = 0.1
+	modulate = Color.RED
+	
 	show_healthbar = true
 	healthbar_timer = 3.0
-
 	
 	if current_health <= 0:
 		die()
 
 func die():
-	queue_free()  # TODO: spawn corpse instead
+	queue_free()
 
 func attack():
 	print("GREEN ENEMY SWINGS SWORD!")
 	can_attack = false
 	attack_timer = attack_cooldown
 	
-	# Check if we actually hit
 	var distance = global_position.distance_to(player.global_position)
 	if distance <= attack_range:
 		print("SWORD HIT!")
-		player.take_damage(100)  # when we have health
+		player.take_damage(100)
 
 func randomize_wander_direction():
-	# Pick a random direction to walk
-	var angle = randf() * TAU  # TAU = 2*PI = full circle
+	var angle = randf() * TAU
 	wander_direction = Vector2(cos(angle), sin(angle))
 	wander_timer = wander_time

@@ -44,6 +44,7 @@ var danger_tiles = []
 @onready var sprite = $Sprite2D
 
 func _ready():
+	add_to_group("boss")
 	change_state(BossState.IDLE)
 
 func _physics_process(delta):

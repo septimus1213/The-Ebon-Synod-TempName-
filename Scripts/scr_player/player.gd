@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 var debug_draw_hitbox = true  # set to false to hide
+var hitbox_active = false
 
 # Movement
 @export var speed = 300.0
@@ -10,10 +11,14 @@ var debug_draw_hitbox = true  # set to false to hide
 
 # Combat
 @export var sword_damage = 25
+var sword_attack_angle = 0.0
+@export var sword_ground_scene: PackedScene
+@export var bow_ground_scene: PackedScene
+@export var sword_knockback_force = 200.0
 
 # Health
-@export var max_health = 300
-var current_health = 300
+@export var max_health = 1300
+var current_health = 1300
 
 # Weapon system
 enum Weapon { NONE, SWORD, BOW }
@@ -38,10 +43,10 @@ var last_walk_animation = "WalkDown"
 @onready var animated_sprite: AnimatedSprite2D = $Walking
 @onready var weapon_sprite: Sprite2D = $WeaponSprite  
 @onready var health_bar: AnimatedSprite2D = $"../playerfollow/HealthBar"
-@onready var sword_hitbox: Area2D = $SwordHitbox  # ADD THIS
+@onready var sword_hitbox: Area2D = $SwordHitbox 
 
 func _ready():
-	current_health = max_health  # ADD THIS
+	current_health = max_health  
 	dash_cooldown_timer.wait_time = dash_cooldown
 	update_weapon_visuals()
 	
@@ -65,10 +70,10 @@ func _process(delta):
 
 
 func _draw():
-	if not debug_draw_hitbox or not sword_hitbox:
+	# ONLY draw if debug is on AND hitbox is currently active
+	if not debug_draw_hitbox or not hitbox_active or not sword_hitbox:
 		return
 	
-	# Get the collision shape from sword hitbox
 	var shape_node = sword_hitbox.get_node("CollisionShape2D")
 	if not shape_node or not shape_node.shape:
 		return
@@ -76,11 +81,22 @@ func _draw():
 	var shape = shape_node.shape
 	var shape_pos = sword_hitbox.position + shape_node.position
 	
-	# Draw rectangle for RectangleShape2D
 	if shape is RectangleShape2D:
 		var rect_size = shape.size
-		var rect = Rect2(shape_pos - rect_size/2, rect_size)
-		draw_rect(rect, Color.RED if sword_hitbox.monitoring else Color.BLUE, false, 2)
+		var center = shape_pos
+		var half_size = rect_size / 2
+		
+		var angle = sword_hitbox.rotation
+		var corners = [
+			center + Vector2(-half_size.x, -half_size.y).rotated(angle),
+			center + Vector2(half_size.x, -half_size.y).rotated(angle),
+			center + Vector2(half_size.x, half_size.y).rotated(angle),
+			center + Vector2(-half_size.x, half_size.y).rotated(angle)
+		]
+		
+		var color = Color.RED 
+		for i in range(4):
+			draw_line(corners[i], corners[(i+1) % 4], color, 2)
 
 # ===== MOVEMENT =====
 func handle_movement(delta):
@@ -139,6 +155,7 @@ func drop_weapon() -> Weapon:
 
 func handle_drop_weapon():
 	if Input.is_action_just_pressed("Drop_Item") and current_weapon != Weapon.NONE:
+		print("Dropping weapon: ", current_weapon)  # ADD DEBUG
 		var dropped_weapon = drop_weapon()
 		spawn_weapon_on_ground(dropped_weapon, global_position)
 
@@ -173,7 +190,6 @@ func handle_attack():
 		Weapon.BOW:
 			attack_bow()
 
-# REPLACE THIS FUNCTION
 func attack_sword():
 	if not sword_hitbox:
 		print("NO SWORD HITBOX!")
@@ -181,21 +197,42 @@ func attack_sword():
 	
 	print("SWORD SWING!")
 	
+	# Get attack direction
+	var mouse_pos = get_global_mouse_position()
+	var angle = (mouse_pos - global_position).angle()
+	sword_attack_angle = angle
+	
+	# Position hitbox in front of player in attack direction
+	var hitbox_distance = 20  # how far from player center
+	var offset = Vector2(cos(angle), sin(angle)) * hitbox_distance
+	sword_hitbox.position = offset
+	sword_hitbox.rotation = angle
+	
 	# Enable hitbox briefly
 	sword_hitbox.monitoring = true
+	hitbox_active = true
+	queue_redraw()
 	
 	# Disable after short time
 	var timer = get_tree().create_timer(0.2)
 	timer.timeout.connect(func(): 
 		if sword_hitbox:
 			sword_hitbox.monitoring = false
+			hitbox_active = false
+			queue_redraw()
 	)
 
-# ADD THIS NEW FUNCTION
+
 func _on_sword_hit(body):
 	if body.is_in_group("edible") and body.has_method("take_damage"):
 		print("SWORD HIT: ", body.name)
 		body.take_damage(sword_damage)
+		
+		# Knockback (not for boss)
+		if not body.is_in_group("boss"):
+			var knockback_dir = (body.global_position - global_position).normalized()
+			if body.has_method("apply_knockback"):
+				body.apply_knockback(knockback_dir, sword_knockback_force)
 
 func attack_bow():
 	if arrow_scene == null:
@@ -239,11 +276,24 @@ func die():
 
 # ===== UTILITY =====
 func spawn_weapon_on_ground(weapon_type: Weapon, position: Vector2):
+	var weapon_pickup = null
+	
 	match weapon_type:
 		Weapon.SWORD:
-			print("Spawned sword at: ", position)
+			if sword_ground_scene:
+				weapon_pickup = sword_ground_scene.instantiate()
+			else:
+				print("ERROR: Sword ground scene not assigned!")
 		Weapon.BOW:
-			print("Spawned bow at: ", position)
+			if bow_ground_scene:
+				weapon_pickup = bow_ground_scene.instantiate()
+			else:
+				print("ERROR: Bow ground scene not assigned!")
+	
+	if weapon_pickup:
+		get_parent().add_child(weapon_pickup)
+		weapon_pickup.global_position = position
+		print("Spawned weapon pickup at: ", position)
 
 func _on_timer_timeout():
 	is_dash_ready = true
