@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://da00t65gcfmq3"
+path="res://.godot/imported/Dash sound TEST.wav-5e0741b49747be523d185e65192a93ae.sample"
+
+[deps]
+
+source_file="res://Assets/Sounds/Dash sound TEST.wav"
+dest_files=["res://.godot/imported/Dash sound TEST.wav-5e0741b49747be523d185e65192a93ae.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

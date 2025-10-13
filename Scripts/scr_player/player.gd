@@ -53,7 +53,10 @@ var last_walk_animation = "WalkDown"
 @onready var hurt: AnimatedSprite2D = $hurt
 @onready var BowAttackSound: AudioStreamPlayer2D = $Sounds/BowAttack
 @onready var SwordAttackSound: AudioStreamPlayer2D = $Sounds/SwordAttack
-
+@onready var crossbow: AnimatedSprite2D = $CrossBowHolder/CrossBow
+@onready var hurtsound: AudioStreamPlayer2D = $Sounds/Hurt
+@onready var diesound: AudioStreamPlayer2D = $Sounds/Die
+@onready var dashsound: AudioStreamPlayer2D = $Sounds/Dash
 
 func _ready():
 	current_health = max_health  
@@ -143,7 +146,8 @@ func start_dash(direction: Vector2):
 	is_dash_ready = false
 	dash_direction = direction.normalized()
 	dash_timer_active = dash_duration
-
+	dashsound.play()
+	
 func handle_dash_movement(delta):
 	dash_timer_active -= delta
 	
@@ -176,12 +180,12 @@ func update_weapon_visuals():
 	match current_weapon:
 		Weapon.NONE:
 			weapon_sprite.visible = false
+			crossbow.visible = false
 		Weapon.SWORD:
 			weapon_sprite.visible = true
 			# weapon_sprite.texture = load("res://path/to/sword_sprite.png")
 		Weapon.BOW:
-			weapon_sprite.visible = true
-			# weapon_sprite.texture = load("res://path/to/bow_sprite.png")
+			crossbow.visible = true
 
 func handle_weapon_rotation():
 	if current_weapon == Weapon.NONE:
@@ -284,7 +288,7 @@ func attack_bow():
 	arrow_instance.rotation = angle
 	if arrow_instance.has_method("set_direction"):
 		arrow_instance.set_direction(Vector2(cos(angle), sin(angle)))
-		
+		arrow_instance.global_position = crossbow.global_position 
 	can_shoot_bow = false
 	
 	BowCoolddown.start()
@@ -314,7 +318,7 @@ func take_damage(amount):
 	hurt.visible = true
 	animated_sprite.visible = false
 	hurt.play("hurt")
-	
+	hurtsound.play()
 	
 	
 	
@@ -328,6 +332,7 @@ func update_health_bar():
 		health_bar.play("dead")
 
 func die():
+	diesound.play()
 	print("PLAYER DIED - GAME OVER!")
 	get_tree().change_scene_to_file("res://Scenes/retry_screen.tscn")
 
