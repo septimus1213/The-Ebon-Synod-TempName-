@@ -1,69 +1,249 @@
 extends CharacterBody2D
 
+var debug_draw_hitbox = true  # set to false to hide
 
-@export var DashTimer = 5
-@export var speed = 200.0
-@export var dashspeed = 3000
-@onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
-@onready var timer: Timer = $Timer
-@onready var animated_sprite_2d: AnimatedSprite2D = $Walking
-@onready var player_with_sword: CharacterBody2D = $"../PlayerWithSword"
-@onready var player_with_bow: CharacterBody2D = $"../PlayerWithBow"
-@onready var player: CharacterBody2D = $"."
-@onready var health_bar: AnimatedSprite2D = $"../playerfollow/HealthBar"
+# Movement
+@export var speed = 300.0
+@export var dash_speed = 1000.0
+@export var dash_duration = 0.2
+@export var dash_cooldown = 5.0
 
-var player_health = 300
+# Combat
+@export var sword_damage = 25
 
+# Health
+@export var max_health = 300
+var current_health = 300
 
+# Weapon system
+enum Weapon { NONE, SWORD, BOW }
+var current_weapon = Weapon.NONE
+
+# Dash
 var is_dash_ready = true
+var is_dashing = false
+var dash_timer_active = 0.0
+var dash_direction = Vector2.ZERO
 
+# Last animation played for idle
+var last_walk_animation = "WalkDown"
 
+# Projectile (for bow)
+@export var arrow_scene: PackedScene
+@export var projectile_speed = 600
 
-# set timer length
-func _ready() -> void:
-	timer.wait_time = DashTimer
-	print(animated_sprite_2d)
+# Node references
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var dash_cooldown_timer: Timer = $Timer
+@onready var animated_sprite: AnimatedSprite2D = $Walking
+@onready var weapon_sprite: Sprite2D = $WeaponSprite  
+@onready var health_bar: AnimatedSprite2D = $"../playerfollow/HealthBar"
+@onready var sword_hitbox: Area2D = $SwordHitbox  # ADD THIS
 
-# walk  left right up down and dash with a timer between dash of x secconds
-func _physics_process(_delta):
+func _ready():
+	current_health = max_health  # ADD THIS
+	dash_cooldown_timer.wait_time = dash_cooldown
+	update_weapon_visuals()
 	
-	var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	velocity = direction * speed
-	if direction.x < 0:
-		animated_sprite_2d.play("WalkLeft")
-	elif direction.x > 0:
-		animated_sprite_2d.play("WalkRight")
-	elif direction.y < 0:
-		animated_sprite_2d.play("WalkUp")
-	elif direction.y > 0:
-		animated_sprite_2d.play("WalkDown")
+	# ADD THIS SECTION - Connect sword hitbox
+	if sword_hitbox:
+		sword_hitbox.body_entered.connect(_on_sword_hit)
+		sword_hitbox.monitoring = false
+
+func _physics_process(delta):
+	if is_dashing:
+		handle_dash_movement(delta)
 	else:
-		animated_sprite_2d.play("idle")
+		handle_movement(delta)
 	
-	
-	var dash = Input.is_action_just_pressed("dash")
-	if dash and direction != Vector2.ZERO and is_dash_ready == true:
-		collision_shape_2d.disabled = true
-		velocity = direction * dashspeed
-		collision_shape_2d.disabled = false
-		is_dash_ready = false
-		timer.start()
-		player_with_bow.position = player.position
-		player_with_sword.position = player.position
-		
 	move_and_slide()
 
+func _process(delta):
+	handle_weapon_rotation()
+	handle_attack()
+	handle_drop_weapon()
+
+
+func _draw():
+	if not debug_draw_hitbox or not sword_hitbox:
+		return
 	
-# timer for setting dash to true after x secconds
-func _on_timer_timeout() -> void:
-	is_dash_ready = true
+	# Get the collision shape from sword hitbox
+	var shape_node = sword_hitbox.get_node("CollisionShape2D")
+	if not shape_node or not shape_node.shape:
+		return
 	
+	var shape = shape_node.shape
+	var shape_pos = sword_hitbox.position + shape_node.position
+	
+	# Draw rectangle for RectangleShape2D
+	if shape is RectangleShape2D:
+		var rect_size = shape.size
+		var rect = Rect2(shape_pos - rect_size/2, rect_size)
+		draw_rect(rect, Color.RED if sword_hitbox.monitoring else Color.BLUE, false, 2)
+
+# ===== MOVEMENT =====
+func handle_movement(delta):
+	var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	velocity = direction * speed
+	
+	if Input.is_action_just_pressed("dash") and is_dash_ready and direction != Vector2.ZERO:
+		start_dash(direction)
+		return
+	
+	if direction != Vector2.ZERO:
+		if abs(direction.x) > abs(direction.y):
+			if direction.x < 0:
+				animated_sprite.play("WalkLeft")
+				last_walk_animation = "WalkLeft"
+			else:
+				animated_sprite.play("WalkRight")
+				last_walk_animation = "WalkRight"
+		else:
+			if direction.y < 0:
+				animated_sprite.play("WalkUp")
+				last_walk_animation = "WalkUp"
+			else:
+				animated_sprite.play("WalkDown")
+				last_walk_animation = "WalkDown"
+	else:
+		animated_sprite.play(last_walk_animation)
+		animated_sprite.stop()
+
+func start_dash(direction: Vector2):
+	is_dashing = true
+	is_dash_ready = false
+	dash_direction = direction.normalized()
+	dash_timer_active = dash_duration
+
+func handle_dash_movement(delta):
+	dash_timer_active -= delta
+	
+	if dash_timer_active <= 0:
+		is_dashing = false
+		dash_cooldown_timer.start()
+		velocity = Vector2.ZERO
+	else:
+		velocity = dash_direction * dash_speed
+
+# ===== WEAPON SYSTEM =====
+func pickup_weapon(weapon_type: Weapon):
+	current_weapon = weapon_type
+	update_weapon_visuals()
+
+func drop_weapon() -> Weapon:
+	var dropped = current_weapon
+	current_weapon = Weapon.NONE
+	update_weapon_visuals()
+	return dropped
+
+func handle_drop_weapon():
+	if Input.is_action_just_pressed("Drop_Item") and current_weapon != Weapon.NONE:
+		var dropped_weapon = drop_weapon()
+		spawn_weapon_on_ground(dropped_weapon, global_position)
+
+func update_weapon_visuals():
+	match current_weapon:
+		Weapon.NONE:
+			weapon_sprite.visible = false
+		Weapon.SWORD:
+			weapon_sprite.visible = true
+			# weapon_sprite.texture = load("res://path/to/sword_sprite.png")
+		Weapon.BOW:
+			weapon_sprite.visible = true
+			# weapon_sprite.texture = load("res://path/to/bow_sprite.png")
+
+func handle_weapon_rotation():
+	if current_weapon == Weapon.NONE:
+		return
+	
+	var mouse_pos = get_global_mouse_position()
+	var angle = (mouse_pos - global_position).angle()
+	weapon_sprite.rotation = angle
+
+# ===== ATTACK =====
+func handle_attack():
+	if not Input.is_action_just_pressed("Attack"):
+		return
+	
+	match current_weapon:
+		Weapon.SWORD:
+			attack_sword()
+			queue_redraw()
+		Weapon.BOW:
+			attack_bow()
+
+# REPLACE THIS FUNCTION
+func attack_sword():
+	if not sword_hitbox:
+		print("NO SWORD HITBOX!")
+		return
+	
+	print("SWORD SWING!")
+	
+	# Enable hitbox briefly
+	sword_hitbox.monitoring = true
+	
+	# Disable after short time
+	var timer = get_tree().create_timer(0.2)
+	timer.timeout.connect(func(): 
+		if sword_hitbox:
+			sword_hitbox.monitoring = false
+	)
+
+# ADD THIS NEW FUNCTION
+func _on_sword_hit(body):
+	if body.is_in_group("edible") and body.has_method("take_damage"):
+		print("SWORD HIT: ", body.name)
+		body.take_damage(sword_damage)
+
+func attack_bow():
+	if arrow_scene == null:
+		print("ERROR: Arrow scene not assigned!")
+		return
+	
+	var arrow_instance = arrow_scene.instantiate()
+	get_parent().add_child(arrow_instance)
+	
+	var mouse_pos = get_global_mouse_position()
+	var angle = (mouse_pos - global_position).angle()
+	
+	arrow_instance.global_position = global_position
+	arrow_instance.rotation = angle
+	if arrow_instance.has_method("set_direction"):
+		arrow_instance.set_direction(Vector2(cos(angle), sin(angle)))
+
+# ===== HEALTH =====
 func take_damage(amount):
-	player_health -= amount
-	if player_health  <= 200 and player_health > 100:
-		health_bar.play("2 hearts")
-	elif player_health <=  100 and player_health != 0:
-		health_bar.play("1 heart")
-	elif player_health == 0:
-		health_bar.play("dead")
+	current_health -= amount
+	current_health = max(0, current_health)
 	
+	print("PLAYER took ", amount, " damage! HP: ", current_health, "/", max_health)  # ADD THIS
+	
+	update_health_bar()
+	
+	if current_health == 0:
+		die()
+
+func update_health_bar():
+	if current_health <= 200 and current_health > 100:
+		health_bar.play("2 hearts")
+	elif current_health <= 100 and current_health > 0:
+		health_bar.play("1 heart")
+	elif current_health == 0:
+		health_bar.play("dead")
+
+func die():
+	print("PLAYER DIED - GAME OVER!")
+	get_tree().reload_current_scene()  # ADD THIS - quick restart
+
+# ===== UTILITY =====
+func spawn_weapon_on_ground(weapon_type: Weapon, position: Vector2):
+	match weapon_type:
+		Weapon.SWORD:
+			print("Spawned sword at: ", position)
+		Weapon.BOW:
+			print("Spawned bow at: ", position)
+
+func _on_timer_timeout():
+	is_dash_ready = true
