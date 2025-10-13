@@ -7,6 +7,11 @@ extends CharacterBody2D
 @export var attack_range = 64.0       
 @export var attack_cooldown = 3
 
+@export var max_health = 100
+var current_health = 100
+var show_healthbar = false
+var healthbar_timer = 0.0
+
 var player = null
 var can_attack = true
 var attack_timer = 0.0
@@ -25,9 +30,10 @@ enum State {
 var current_state = State.WANDERING
 
 func _ready():
+	current_health = max_health
 	player = get_tree().get_first_node_in_group("player")
 	if player == null:
-		print("GREEN ENEMY: No player? Guess I'll just wander forever...")
+		print("GREEN ENEMY: No player?")
 	
 	# Pick random starting wander direction
 	randomize_wander_direction()
@@ -79,6 +85,46 @@ func _physics_process(delta):
 			# After attack, go back to chasing
 			if can_attack:  # cooldown finished
 				current_state = State.CHASING
+				
+	if show_healthbar:
+		healthbar_timer -= delta
+		if healthbar_timer <= 0:
+			show_healthbar = false
+		queue_redraw()  # trigger _draw() call
+
+func _draw():
+	if not show_healthbar:
+		return
+	
+	# Draw healthbar above enemy
+	var bar_width = 40
+	var bar_height = 6
+	var bar_offset = Vector2(-bar_width/2, -30)
+	
+	# Background (red)
+	draw_rect(Rect2(bar_offset, Vector2(bar_width, bar_height)), Color.RED)
+	
+	# Foreground (green) - scales with health
+	var health_percent = float(current_health) / float(max_health)
+	draw_rect(Rect2(bar_offset, Vector2(bar_width * health_percent, bar_height)), Color.GREEN)
+	
+	# Border (black)
+	draw_rect(Rect2(bar_offset, Vector2(bar_width, bar_height)), Color.BLACK, false, 1)
+
+func take_damage(amount):
+	current_health -= amount
+	current_health = max(0, current_health)
+	
+	# Show healthbar for 3 seconds
+	show_healthbar = true
+	healthbar_timer = 3.0
+
+	
+	if current_health <= 0:
+		die()
+
+func die():
+	queue_free()  # TODO: spawn corpse instead
 
 func attack():
 	print("GREEN ENEMY SWINGS SWORD!")

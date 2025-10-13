@@ -1,29 +1,19 @@
 extends Area2D
 
-
+@export var weapon_type: int = 1  # 0 = none, 1 = sword, 2 = bow
 @onready var label: Label = $Label
-@onready var sword_on_ground: Area2D = $"."
-@onready var player: CharacterBody2D = $"../Player"
-@onready var player_with_sword: CharacterBody2D = $"../PlayerWithSword"
-@onready var player_with_bow: CharacterBody2D = $"../PlayerWithBow"
-@onready var animated_sprite: AnimatedSprite2D = $"../playerfollow/WeaponIcons/AnimatedSprite2D"
 
-#  pickup item/sword
-func _process(_delta: float) -> void:
-	var pickup = Input.is_action_just_pressed("Pickup_Item")
-	if pickup and label.visible == true and player_with_bow.visible == false:
-		player_with_sword.position = player.position
-		player_with_sword.visible = true
-		player.visible = false
-		sword_on_ground.visible = false
-		animated_sprite.play("sword")
-		
+func _process(delta):
+	if Input.is_action_just_pressed("Pickup_Item") and label.visible:
+		var player = get_tree().get_first_node_in_group("player")
+		if player and player.current_weapon == 0:  # only if no weapon
+			player.pickup_weapon(weapon_type)
+			queue_free()  # remove weapon from ground
 
-# pickup label set to visible
-func _on_body_entered(_body: Node2D) -> void:
-	label.visible = true
+func _on_body_entered(body):
+	if body.is_in_group("player"):
+		label.visible = true
 
-
-# pickup label set to invisible
-func _on_body_exited(_body: Node2D) -> void:
-	label.visible = false
+func _on_body_exited(body):
+	if body.is_in_group("player"):
+		label.visible = false

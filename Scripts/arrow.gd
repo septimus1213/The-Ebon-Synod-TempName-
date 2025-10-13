@@ -5,6 +5,8 @@ var direction = Vector2.ZERO
 @export var lifetime = 5
 @onready var timer: Timer = $Timer
 
+func set_direction(dir: Vector2):
+	direction = dir
 
 func _ready():
 	timer.wait_time = lifetime

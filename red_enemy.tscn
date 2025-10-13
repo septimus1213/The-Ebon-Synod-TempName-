@@ -14,3 +14,8 @@ texture = ExtResource("1_e0x7a")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ixsqt")
+
+[node name="DamageTimer" type="Timer" parent="."]
+wait_time = 2.0
+
+[connection signal="timeout" from="DamageTimer" to="." method="_on_damage_timer_timeout"]
