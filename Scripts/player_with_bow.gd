@@ -12,7 +12,7 @@ extends CharacterBody2D
 @onready var sprite_2d: Sprite2D = $Bow/Sprite2D
 @onready var timer: Timer = $Dashtimer
 @onready var bow_ground: Area2D = $"../bow_ground"
-
+@onready var animated_sprite: AnimatedSprite2D = $"../playerfollow/WeaponIcons/AnimatedSprite2D"
 
 
 var arrow = preload("res://Scenes/PrefabScenes/arrow.tscn")
@@ -68,6 +68,7 @@ func _process(delta: float) -> void:
 		# add normal player back
 		player.position = player_with_bow.global_position
 		player.visible = true
+		animated_sprite.play("none")
 		
 		# add sword back on the ground
 		bow_ground.position = player_with_bow.global_position
@@ -75,7 +76,7 @@ func _process(delta: float) -> void:
 		
 		# delete player with sword
 		player_with_bow.visible = false
-	
+		
 
 
 func _on_timer_timeout() -> void:

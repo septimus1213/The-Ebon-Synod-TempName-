@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=3 uid="uid://bx8bsjabsig65"]
+[gd_scene load_steps=60 format=3 uid="uid://bx8bsjabsig65"]
 
 [ext_resource type="Script" uid="uid://cj4en2phmgdj7" path="res://Scripts/scr_player/player.gd" id="1_pyidc"]
 [ext_resource type="Texture2D" uid="uid://4b3oeqp4auyu" path="res://Assets/Player And Attributes/Knight_walk-Sheet.png" id="2_vyht1"]
@@ -7,11 +7,12 @@
 [ext_resource type="PackedScene" uid="uid://r8weomta0yow" path="res://Scenes/PrefabScenes/sword_ground.tscn" id="5_l8v81"]
 [ext_resource type="PackedScene" uid="uid://c14lejl5v303w" path="res://Scenes/PrefabScenes/bow_ground.tscn" id="6_l8v81"]
 [ext_resource type="PackedScene" uid="uid://to0pjrw8twi0" path="res://Scenes/PrefabScenes/player_with_bow.tscn" id="7_vyht1"]
+[ext_resource type="Script" uid="uid://cojv8o2yv4vg3" path="res://Scripts/playerfollow.gd" id="8_eji0w"]
 [ext_resource type="Texture2D" uid="uid://xs0b8nnuykh4" path="res://Assets/Player And Attributes/Healthbar/Hearts - 1.png" id="8_qw60f"]
 [ext_resource type="Texture2D" uid="uid://ks7rrjbuwg51" path="res://Assets/Player And Attributes/Healthbar/Hearts - 2.png" id="9_eji0w"]
 [ext_resource type="Texture2D" uid="uid://bvb12ejhgg64o" path="res://Assets/Player And Attributes/Healthbar/Hearts empty.png" id="10_qwhpj"]
 [ext_resource type="Texture2D" uid="uid://b2bif6gmw102m" path="res://Assets/Player And Attributes/Healthbar/Hearts.png" id="11_qt76e"]
-[ext_resource type="PackedScene" uid="uid://2q4ybtx02374" path="res://red_enemy.tscn" id="12_qw60f"]
+[ext_resource type="Texture2D" uid="uid://cnx6kxea2tsfp" path="res://Assets/Player And Attributes/Item_ui-Sheet.png" id="12_qw60f"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_28aoi"]
 texture = ExtResource("3_vvh5c")
@@ -142,6 +143,45 @@ animations = [{
 }],
 "loop": true,
 "name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eji0w"]
+atlas = ExtResource("12_qw60f")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qwhpj"]
+atlas = ExtResource("12_qw60f")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qt76e"]
+atlas = ExtResource("12_qw60f")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_r3r3k"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eji0w")
+}],
+"loop": true,
+"name": &"crossbow",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qwhpj")
+}],
+"loop": true,
+"name": &"none",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qt76e")
+}],
+"loop": true,
+"name": &"sword",
 "speed": 5.0
 }]
 
@@ -373,17 +413,24 @@ texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_bf3um")
 animation = &"idle"
 
-[node name="HealthBar" type="AnimatedSprite2D" parent="Player"]
+[node name="playerfollow" type="Node2D" parent="."]
 z_index = 7
-position = Vector2(-240, -113)
+position = Vector2(0, -1)
+script = ExtResource("8_eji0w")
+
+[node name="WeaponIcons" type="Node2D" parent="playerfollow"]
+position = Vector2(3, 47)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="playerfollow/WeaponIcons"]
+position = Vector2(274, -197)
+sprite_frames = SubResource("SpriteFrames_r3r3k")
+animation = &"none"
+autoplay = "none"
+
+[node name="HealthBar" type="AnimatedSprite2D" parent="playerfollow"]
+z_index = 7
+position = Vector2(-235, -110)
 sprite_frames = SubResource("SpriteFrames_sq7yr")
-animation = &"dead"
 autoplay = "default"
 
-[node name="red_enemy" parent="." instance=ExtResource("12_qw60f")]
-position = Vector2(-100, -64)
-
-[node name="DamageTimer" type="Timer" parent="red_enemy"]
-
 [connection signal="timeout" from="Player/Timer" to="Player" method="_on_timer_timeout"]
-[connection signal="timeout" from="red_enemy/DamageTimer" to="red_enemy" method="_on_damage_timer_timeout"]

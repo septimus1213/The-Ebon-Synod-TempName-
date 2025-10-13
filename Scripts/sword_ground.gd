@@ -6,6 +6,7 @@ extends Area2D
 @onready var player: CharacterBody2D = $"../Player"
 @onready var player_with_sword: CharacterBody2D = $"../PlayerWithSword"
 @onready var player_with_bow: CharacterBody2D = $"../PlayerWithBow"
+@onready var animated_sprite: AnimatedSprite2D = $"../playerfollow/WeaponIcons/AnimatedSprite2D"
 
 #  pickup item/sword
 func _process(_delta: float) -> void:
@@ -15,6 +16,7 @@ func _process(_delta: float) -> void:
 		player_with_sword.visible = true
 		player.visible = false
 		sword_on_ground.visible = false
+		animated_sprite.play("sword")
 		
 
 # pickup label set to visible

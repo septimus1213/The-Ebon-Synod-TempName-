@@ -10,7 +10,7 @@ extends CharacterBody2D
 @onready var player_with_sword: CharacterBody2D = $"../PlayerWithSword"
 @onready var player_with_bow: CharacterBody2D = $"../PlayerWithBow"
 @onready var player: CharacterBody2D = $"."
-@onready var health_bar: AnimatedSprite2D = $HealthBar
+@onready var health_bar: AnimatedSprite2D = $"../playerfollow/HealthBar"
 
 var player_health = 300
 
@@ -53,8 +53,7 @@ func _physics_process(_delta):
 		
 	move_and_slide()
 
-
-
+	
 # timer for setting dash to true after x secconds
 func _on_timer_timeout() -> void:
 	is_dash_ready = true
