@@ -46,6 +46,8 @@ var last_walk_animation = "WalkDown"
 @onready var sword_hitbox: Area2D = $SwordHitbox 
 @onready var weaponicons: AnimatedSprite2D = $"../playerfollow/WeaponIcons/AnimatedSprite2D"
 @onready var Healthbar: AnimatedSprite2D = $"../playerfollow/HealthBar"
+@onready var attack_sprites: AnimatedSprite2D = $attack_sprites
+
 
 func _ready():
 	current_health = max_health  
@@ -204,6 +206,24 @@ func attack_sword():
 	var mouse_pos = get_global_mouse_position()
 	var angle = (mouse_pos - global_position).angle()
 	sword_attack_angle = angle
+	var angleindeg = rad_to_deg(sword_attack_angle)
+	
+	if angleindeg > -45 and angleindeg <= 45:
+		attack_sprites.visible = true
+		animated_sprite.visible = false
+		attack_sprites.play("attack_right")
+	elif angleindeg > 45 and angleindeg <= 135:
+		attack_sprites.visible = true
+		animated_sprite.visible = false
+		attack_sprites.play("attack_down")
+	elif angleindeg > 135 or angleindeg <= -135:
+		attack_sprites.visible = true
+		animated_sprite.visible = false
+		attack_sprites.play("attack_left")
+	elif angleindeg > -135 and angleindeg <= -45:
+		attack_sprites.visible = true
+		animated_sprite.visible = false
+		attack_sprites.play("attack_up")
 	
 	# Position hitbox in front of player in attack direction
 	var hitbox_distance = 20  # how far from player center
@@ -310,3 +330,8 @@ func spawn_weapon_on_ground(weapon_type: Weapon, position: Vector2):
 
 func _on_timer_timeout():
 	is_dash_ready = true
+
+
+func _on_attack_sprites_animation_finished() -> void:
+	attack_sprites.visible = false
+	animated_sprite.visible = true

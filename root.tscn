@@ -276,7 +276,7 @@ position = Vector2(3, 47)
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="playerfollow/WeaponIcons"]
 texture_filter = 1
 position = Vector2(261, -181)
-scale = Vector2(2.3125, 2.625)
+scale = Vector2(2.203, 2.5)
 sprite_frames = SubResource("SpriteFrames_r3r3k")
 animation = &"sword"
 autoplay = "none"
@@ -296,7 +296,7 @@ danger_tile_texture = ExtResource("12_sq7yr")
 spike_texture = ExtResource("13_r3r3k")
 
 [node name="Player" parent="." instance=ExtResource("14_qt76e")]
-position = Vector2(33, 19)
+position = Vector2(0, -1)
 sword_ground_scene = ExtResource("5_l8v81")
 bow_ground_scene = ExtResource("6_l8v81")
 arrow_scene = ExtResource("15_blcw0")
