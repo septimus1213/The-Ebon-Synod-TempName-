@@ -26,6 +26,8 @@ var is_priming = false
 var prime_timer = 0.0
 var shake_intensity = 0.0
 
+@onready var hurtsound: AudioStreamPlayer2D = $"../SoundsEnemy/EnemyHurt"
+
 enum State {
 	WANDERING,
 	DETECTED,
@@ -40,6 +42,7 @@ func _ready():
 	if player == null:
 		print("BLUE ENEMY: No player to explode on")
 	randomize_wander_direction()
+	print(get_parent().name)
 
 func _physics_process(delta):
 	if player == null:
@@ -126,6 +129,8 @@ func apply_knockback(direction: Vector2, force: float):
 func take_damage(amount):
 	current_health -= amount
 	current_health = max(0, current_health)
+	
+	hurtsound.play()
 	
 	is_hit = true
 	hit_timer = 0.1

@@ -23,6 +23,8 @@ var current_health = 300
 # Weapon system
 enum Weapon { NONE, SWORD, BOW }
 var current_weapon = Weapon.NONE
+var can_shoot_bow = true
+@export var bow_cooldown = 3
 
 # Dash
 var is_dash_ready = true
@@ -47,6 +49,10 @@ var last_walk_animation = "WalkDown"
 @onready var weaponicons: AnimatedSprite2D = $"../playerfollow/WeaponIcons/AnimatedSprite2D"
 @onready var Healthbar: AnimatedSprite2D = $"../playerfollow/HealthBar"
 @onready var attack_sprites: AnimatedSprite2D = $attack_sprites
+@onready  var BowCoolddown: Timer = $BowCooldown
+@onready var hurt: AnimatedSprite2D = $hurt
+@onready var BowAttackSound: AudioStreamPlayer2D = $Sounds/BowAttack
+@onready var SwordAttackSound: AudioStreamPlayer2D = $Sounds/SwordAttack
 
 
 func _ready():
@@ -58,6 +64,8 @@ func _ready():
 	if sword_hitbox:
 		sword_hitbox.body_entered.connect(_on_sword_hit)
 		sword_hitbox.monitoring = false
+	
+	BowCoolddown.wait_time = bow_cooldown
 
 func _physics_process(delta):
 	if is_dashing:
@@ -98,9 +106,9 @@ func _draw():
 			center + Vector2(-half_size.x, half_size.y).rotated(angle)
 		]
 		
-		var color = Color.RED 
-		for i in range(4):
-			draw_line(corners[i], corners[(i+1) % 4], color, 2)
+		# var color = Color.RED 
+		# for i in range(4):
+			# draw_line(corners[i], corners[(i+1) % 4], color, 2)
 
 # ===== MOVEMENT =====
 func handle_movement(delta):
@@ -188,6 +196,8 @@ func handle_attack():
 	if not Input.is_action_just_pressed("Attack"):
 		return
 	
+	
+	
 	match current_weapon:
 		Weapon.SWORD:
 			attack_sword()
@@ -200,8 +210,8 @@ func attack_sword():
 		print("NO SWORD HITBOX!")
 		return
 	
-	print("SWORD SWING!")
-	
+	SwordAttackSound.play()
+		
 	# Get attack direction
 	var mouse_pos = get_global_mouse_position()
 	var angle = (mouse_pos - global_position).angle()
@@ -261,7 +271,9 @@ func attack_bow():
 	if arrow_scene == null:
 		print("ERROR: Arrow scene not assigned!")
 		return
-	
+	if can_shoot_bow == false:
+		return
+	BowAttackSound.play()
 	var arrow_instance = arrow_scene.instantiate()
 	get_parent().add_child(arrow_instance)
 	
@@ -272,6 +284,11 @@ func attack_bow():
 	arrow_instance.rotation = angle
 	if arrow_instance.has_method("set_direction"):
 		arrow_instance.set_direction(Vector2(cos(angle), sin(angle)))
+		
+	can_shoot_bow = false
+	
+	BowCoolddown.start()
+	
 
 # ===== HEALTH =====
 func take_damage(amount):
@@ -294,6 +311,13 @@ func take_damage(amount):
 	else:
 		print("player has to much hp")
 	
+	hurt.visible = true
+	animated_sprite.visible = false
+	hurt.play("hurt")
+	
+	
+	
+	
 
 func update_health_bar():
 	if current_health <= 200 and current_health > 100:
@@ -305,7 +329,7 @@ func update_health_bar():
 
 func die():
 	print("PLAYER DIED - GAME OVER!")
-	get_tree().reload_current_scene()  # ADD THIS - quick restart
+	get_tree().change_scene_to_file("res://Scenes/retry_screen.tscn")
 
 # ===== UTILITY =====
 func spawn_weapon_on_ground(weapon_type: Weapon, position: Vector2):
@@ -334,4 +358,13 @@ func _on_timer_timeout():
 
 func _on_attack_sprites_animation_finished() -> void:
 	attack_sprites.visible = false
+	animated_sprite.visible = true
+	
+
+func _on_bow_cooldown_timeout() -> void:
+	can_shoot_bow = true
+
+
+func _on_hurt_animation_finished() -> void:
+	hurt.visible = false
 	animated_sprite.visible = true

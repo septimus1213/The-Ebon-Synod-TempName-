@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://buovo3jp0ajwm"
+path="res://.godot/imported/Swing sound TEST.wav-f721d1ed811df2df8afcbc7e60505bcb.sample"
+
+[deps]
+
+source_file="res://Assets/Sounds/Swing sound TEST.wav"
+dest_files=["res://.godot/imported/Swing sound TEST.wav-f721d1ed811df2df8afcbc7e60505bcb.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

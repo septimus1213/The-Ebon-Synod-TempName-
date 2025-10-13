@@ -24,6 +24,8 @@ var wander_direction = Vector2.ZERO
 var wander_timer = 0.0
 var wander_time = 2.0
 
+@onready var hurtsound: AudioStreamPlayer2D = $"../SoundsEnemy/EnemyHurt"
+
 enum State {
 	WANDERING,
 	CHASING,
@@ -38,6 +40,7 @@ func _ready():
 	if player == null:
 		print("GREEN ENEMY: No player?")
 	randomize_wander_direction()
+	print(get_parent().name)
 
 func _physics_process(delta):
 	if player == null:
@@ -120,6 +123,8 @@ func take_damage(amount):
 	current_health -= amount
 	current_health = max(0, current_health)
 	
+	hurtsound.play()
+	
 	is_hit = true
 	hit_timer = 0.1
 	modulate = Color.RED
@@ -141,7 +146,7 @@ func attack():
 	var distance = global_position.distance_to(player.global_position)
 	if distance <= attack_range:
 		print("SWORD HIT!")
-		player.take_damage(100)
+		player.take_damage(50)
 
 func randomize_wander_direction():
 	var angle = randf() * TAU

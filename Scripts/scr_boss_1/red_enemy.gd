@@ -19,7 +19,7 @@ var show_healthbar = false
 var healthbar_timer = 0.0
 
 @onready var damage_timer: Timer = $DamageTimer
-
+@onready var hurtsound: AudioStreamPlayer2D = $"../SoundsEnemy/EnemyHurt"
 func _ready():
 	current_health = max_health
 	damage_timer.wait_time = damage_cooldown
@@ -86,6 +86,8 @@ func apply_knockback(direction: Vector2, force: float):
 func take_damage(amount):
 	current_health -= amount
 	current_health = max(0, current_health)
+	
+	hurtsound.play()
 	
 	is_hit = true
 	hit_timer = 0.1

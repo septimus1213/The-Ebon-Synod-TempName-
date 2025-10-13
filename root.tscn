@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://bx8bsjabsig65"]
+[gd_scene load_steps=50 format=3 uid="uid://bx8bsjabsig65"]
 
 [ext_resource type="Texture2D" uid="uid://c3u8goof4ksup" path="res://Assets/TilesSets/Tilesettest.png" id="3_vvh5c"]
 [ext_resource type="PackedScene" uid="uid://r8weomta0yow" path="res://Scenes/PrefabScenes/sword_ground.tscn" id="5_l8v81"]
@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://2q4ybtx02374" path="res://red_enemy.tscn" id="15_r3r3k"]
 [ext_resource type="PackedScene" uid="uid://doh1frevge0u6" path="res://green_enemy.tscn" id="16_blcw0"]
 [ext_resource type="PackedScene" uid="uid://bjjyicp8qgi3v" path="res://blue_enemy.tscn" id="17_50g4q"]
+[ext_resource type="AudioStream" uid="uid://ckipjwmkpja2d" path="res://Assets/Sounds/Hit Sound TEST.wav" id="18_blcw0"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_28aoi"]
 texture = ExtResource("3_vvh5c")
@@ -306,3 +307,9 @@ position = Vector2(28, -23)
 
 [node name="Sword_Ground" parent="." instance=ExtResource("5_l8v81")]
 position = Vector2(-31, 24)
+
+[node name="SoundsEnemy" type="Node" parent="."]
+
+[node name="EnemyHurt" type="AudioStreamPlayer2D" parent="SoundsEnemy"]
+stream = ExtResource("18_blcw0")
+bus = &"SFX"
