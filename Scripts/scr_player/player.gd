@@ -17,8 +17,8 @@ var sword_attack_angle = 0.0
 @export var sword_knockback_force = 200.0
 
 # Health
-@export var max_health = 1300
-var current_health = 1300
+@export var max_health = 300
+var current_health = 300
 
 # Weapon system
 enum Weapon { NONE, SWORD, BOW }
@@ -44,6 +44,8 @@ var last_walk_animation = "WalkDown"
 @onready var weapon_sprite: Sprite2D = $WeaponSprite  
 @onready var health_bar: AnimatedSprite2D = $"../playerfollow/HealthBar"
 @onready var sword_hitbox: Area2D = $SwordHitbox 
+@onready var weaponicons: AnimatedSprite2D = $"../playerfollow/WeaponIcons/AnimatedSprite2D"
+@onready var Healthbar: AnimatedSprite2D = $"../playerfollow/HealthBar"
 
 func _ready():
 	current_health = max_health  
@@ -151,6 +153,7 @@ func drop_weapon() -> Weapon:
 	var dropped = current_weapon
 	current_weapon = Weapon.NONE
 	update_weapon_visuals()
+	weaponicons.play("none")
 	return dropped
 
 func handle_drop_weapon():
@@ -261,6 +264,16 @@ func take_damage(amount):
 	
 	if current_health == 0:
 		die()
+		Healthbar.play("dead")
+	elif current_health <= 100:
+		Healthbar.play("1 heart")
+	elif current_health > 100 and current_health <= 200:
+		Healthbar.play("2 hearts")
+	elif current_health > 200 and current_health <= 300:
+		Healthbar.play("default")
+	else:
+		print("player has to much hp")
+	
 
 func update_health_bar():
 	if current_health <= 200 and current_health > 100:

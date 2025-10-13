@@ -274,14 +274,16 @@ script = ExtResource("8_eji0w")
 position = Vector2(3, 47)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="playerfollow/WeaponIcons"]
-position = Vector2(274, -197)
+texture_filter = 1
+position = Vector2(261, -181)
+scale = Vector2(2.3125, 2.625)
 sprite_frames = SubResource("SpriteFrames_r3r3k")
-animation = &"none"
+animation = &"sword"
 autoplay = "none"
 
 [node name="HealthBar" type="AnimatedSprite2D" parent="playerfollow"]
 z_index = 7
-position = Vector2(-235, -110)
+position = Vector2(-225, -106)
 sprite_frames = SubResource("SpriteFrames_sq7yr")
 autoplay = "default"
 
