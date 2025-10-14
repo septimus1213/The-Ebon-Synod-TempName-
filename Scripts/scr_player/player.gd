@@ -34,6 +34,8 @@ var dash_direction = Vector2.ZERO
 
 # Last animation played for idle
 var last_walk_animation = "WalkDown"
+var walk_sound_timer = 0.0
+var walk_sound_interval = 0.2
 
 # Projectile (for bow)
 @export var arrow_scene: PackedScene
@@ -125,6 +127,11 @@ func handle_movement(delta):
 		return
 	
 	if direction != Vector2.ZERO:
+		if not walkingsound.playing:
+			walk_sound_timer -= delta
+			if walk_sound_timer <= 0:
+				walkingsound.play()
+				walk_sound_timer = walk_sound_interval
 		if abs(direction.x) > abs(direction.y):
 			if direction.x < 0:
 				animated_sprite.play("WalkLeft")
@@ -141,6 +148,9 @@ func handle_movement(delta):
 				last_walk_animation = "WalkDown"
 				
 	else:
+		if walkingsound.playing:
+			walkingsound.stop()
+			walk_sound_timer = 0
 		animated_sprite.play(last_walk_animation)
 		animated_sprite.stop()
 
