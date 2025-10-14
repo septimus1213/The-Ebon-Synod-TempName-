@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://csbaeu2lptj55"]
+
+[ext_resource type="Script" uid="uid://bhsmbk7w22c4j" path="res://scripts/blood_droplets.gd" id="1_vut71"]
+[ext_resource type="Texture2D" uid="uid://b64ap0221sh0y" path="res://Assets/Player And Attributes/Blooddrops.png" id="2_5dnir"]
+
+[node name="BloodDroplets" type="Node2D"]
+script = ExtResource("1_vut71")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_5dnir")

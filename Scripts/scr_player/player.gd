@@ -57,6 +57,8 @@ var last_walk_animation = "WalkDown"
 @onready var hurtsound: AudioStreamPlayer2D = $Sounds/Hurt
 @onready var diesound: AudioStreamPlayer2D = $Sounds/Die
 @onready var dashsound: AudioStreamPlayer2D = $Sounds/Dash
+@onready var walkingsound: AudioStreamPlayer2D = $Sounds/walking
+
 
 func _ready():
 	current_health = max_health  
@@ -137,10 +139,13 @@ func handle_movement(delta):
 			else:
 				animated_sprite.play("WalkDown")
 				last_walk_animation = "WalkDown"
+				
 	else:
 		animated_sprite.play(last_walk_animation)
 		animated_sprite.stop()
 
+		
+		
 func start_dash(direction: Vector2):
 	is_dashing = true
 	is_dash_ready = false

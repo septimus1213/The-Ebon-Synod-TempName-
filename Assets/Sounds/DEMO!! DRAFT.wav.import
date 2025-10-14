@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bmlgqyc74gxts"
+path="res://.godot/imported/DEMO!! DRAFT.wav-b5fea271632b8dc2a1cf4a9deb8fa1aa.sample"
+
+[deps]
+
+source_file="res://Assets/Sounds/DEMO!! DRAFT.wav"
+dest_files=["res://.godot/imported/DEMO!! DRAFT.wav-b5fea271632b8dc2a1cf4a9deb8fa1aa.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
