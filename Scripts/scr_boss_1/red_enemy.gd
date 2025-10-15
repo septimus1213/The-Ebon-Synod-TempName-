@@ -20,6 +20,11 @@ var healthbar_timer = 0.0
 
 @onready var damage_timer: Timer = $DamageTimer
 @onready var hurtsound: AudioStreamPlayer2D = $"../SoundsEnemy/EnemyHurt"
+@onready var animations: AnimatedSprite2D = $AnimatedSprite2D
+
+
+
+
 func _ready():
 	current_health = max_health
 	damage_timer.wait_time = damage_cooldown
@@ -42,6 +47,22 @@ func _physics_process(delta):
 	var direction = (player.global_position - global_position).normalized()
 	velocity = direction * chase_speed
 	move_and_slide()
+	
+	var diff = (player.global_position - global_position)
+	if diff.length() == 0:
+		animations.play("idle")
+	elif abs(direction.x) > abs(direction.y):
+	# More horizontal
+		if direction.x > 0:
+			animations.play("run_right")
+		else:
+			animations.play("run_left")
+	else:
+	# More vertical
+		if direction.y > 0:
+			animations.play("run_down")
+		else:
+			animations.play("run_up")
 	
 	var distance = global_position.distance_to(player.global_position)
 	if distance <= contact_range and able_to_do_damage:

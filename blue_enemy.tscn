@@ -1,16 +1,200 @@
-[gd_scene load_steps=4 format=3 uid="uid://bjjyicp8qgi3v"]
+[gd_scene load_steps=29 format=3 uid="uid://bjjyicp8qgi3v"]
 
 [ext_resource type="Script" uid="uid://br88q1qkbxq8o" path="res://Scripts/scr_boss_1/blue_enemy.gd" id="1_v1mpc"]
-[ext_resource type="Texture2D" uid="uid://djl8b2rbc306h" path="res://Assets/sprites_boss1/enemy_blue.png" id="2_xr2dr"]
+[ext_resource type="Texture2D" uid="uid://cfjasw8xam4pi" path="res://Assets/sprites_boss1/BlueAnimations/Blue_down.png" id="3_tfpxg"]
+[ext_resource type="Texture2D" uid="uid://n4m3d57tpkn0" path="res://Assets/sprites_boss1/BlueAnimations/Explosion-Sheet.png" id="3_xr2dr"]
+[ext_resource type="Texture2D" uid="uid://bknx7p8n56da7" path="res://Assets/sprites_boss1/BlueAnimations/Blue_left.png" id="4_rdiv8"]
+[ext_resource type="Texture2D" uid="uid://bel74xa1quigf" path="res://Assets/sprites_boss1/BlueAnimations/Blue_right.png" id="5_jhb24"]
+[ext_resource type="Texture2D" uid="uid://542si6uaki6q" path="res://Assets/sprites_boss1/BlueAnimations/Blue_up.png" id="6_sgaid"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_72t8a"]
 size = Vector2(32, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_72t8a"]
+atlas = ExtResource("3_xr2dr")
+region = Rect2(0, 0, 80, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y3xnp"]
+atlas = ExtResource("3_xr2dr")
+region = Rect2(80, 0, 80, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tfpxg"]
+atlas = ExtResource("3_xr2dr")
+region = Rect2(160, 0, 80, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rdiv8"]
+atlas = ExtResource("3_xr2dr")
+region = Rect2(240, 0, 80, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jhb24"]
+atlas = ExtResource("3_xr2dr")
+region = Rect2(320, 0, 80, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sgaid"]
+atlas = ExtResource("3_xr2dr")
+region = Rect2(400, 0, 80, 80)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_80j1y"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_72t8a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y3xnp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tfpxg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rdiv8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jhb24")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sgaid")
+}],
+"loop": false,
+"name": &"default",
+"speed": 20.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_80j1y"]
+atlas = ExtResource("3_tfpxg")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_78c8g"]
+atlas = ExtResource("3_tfpxg")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4atrh"]
+atlas = ExtResource("3_tfpxg")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dx8g6"]
+atlas = ExtResource("3_tfpxg")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k2iaj"]
+atlas = ExtResource("4_rdiv8")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ipcnd"]
+atlas = ExtResource("4_rdiv8")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ybp1n"]
+atlas = ExtResource("4_rdiv8")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1u6vc"]
+atlas = ExtResource("5_jhb24")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fq3fl"]
+atlas = ExtResource("5_jhb24")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o3sbv"]
+atlas = ExtResource("5_jhb24")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_55p2c"]
+atlas = ExtResource("6_sgaid")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pdkgp"]
+atlas = ExtResource("6_sgaid")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jre86"]
+atlas = ExtResource("6_sgaid")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_m5je2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_80j1y")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_78c8g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4atrh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dx8g6")
+}],
+"loop": true,
+"name": &"run_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k2iaj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ipcnd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ybp1n")
+}],
+"loop": true,
+"name": &"run_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1u6vc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fq3fl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o3sbv")
+}],
+"loop": true,
+"name": &"run_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_55p2c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pdkgp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jre86")
+}],
+"loop": true,
+"name": &"run_up",
+"speed": 5.0
+}]
+
 [node name="blue_enemy" type="CharacterBody2D" groups=["edible"]]
 script = ExtResource("1_v1mpc")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_xr2dr")
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_72t8a")
+
+[node name="Explosion" type="AnimatedSprite2D" parent="."]
+visible = false
+z_index = 7
+position = Vector2(1, -1)
+sprite_frames = SubResource("SpriteFrames_80j1y")
+frame = 5
+frame_progress = 1.0
+
+[node name="walking" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_m5je2")
+animation = &"run_up"
+
+[connection signal="animation_finished" from="Explosion" to="." method="_on_explosion_animation_finished"]

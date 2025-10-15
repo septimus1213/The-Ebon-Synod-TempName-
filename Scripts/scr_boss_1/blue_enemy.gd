@@ -25,8 +25,13 @@ var wander_time = 2.0
 var is_priming = false
 var prime_timer = 0.0
 var shake_intensity = 0.0
+var has_exploded = false
 
 @onready var hurtsound: AudioStreamPlayer2D = $"../SoundsEnemy/EnemyHurt"
+@onready var explosion: AnimatedSprite2D = $Explosion
+@onready var playersprite: Sprite2D = $Sprite2D
+@onready var animations: AnimatedSprite2D = $walking
+
 
 enum State {
 	WANDERING,
@@ -63,6 +68,7 @@ func _physics_process(delta):
 	match current_state:
 		State.WANDERING:
 			velocity = wander_direction * wander_speed
+			playanimations(wander_direction)
 			move_and_slide()
 			if distance_to_player <= detection_range:
 				print("BLUE ENEMY: PLAYER DETECTED!")
@@ -71,6 +77,7 @@ func _physics_process(delta):
 		State.DETECTED:
 			var direction = (player.global_position - global_position).normalized()
 			velocity = direction * (wander_speed * 1.5)
+			playanimations(direction)
 			move_and_slide()
 			if distance_to_player <= explosion_range:
 				current_state = State.PRIMING
@@ -91,7 +98,9 @@ func _physics_process(delta):
 			)
 			position += shake_offset
 			if prime_timer <= 0:
-				explode()
+				if has_exploded == false:
+					explode()
+				has_exploded = true
 
 func _process(delta):
 	if is_hit:
@@ -147,13 +156,39 @@ func die():
 
 func explode():
 	print("BLUE ENEMY: BOOM!")
+	
+	explosion.visible = true
+	animations.visible = false
+	explosion.play("default")
 	var distance = global_position.distance_to(player.global_position)
 	if distance <= explosion_range:
 		print("PLAYER HIT BY EXPLOSION!")
 		player.take_damage(explosion_damage)
-	queue_free()
+	
 
 func randomize_wander_direction():
 	var angle = randf() * TAU
 	wander_direction = Vector2(cos(angle), sin(angle))
 	wander_timer = wander_time
+
+
+func _on_explosion_animation_finished() -> void:
+	explosion.visible = false
+	queue_free()
+	
+func playanimations(direction):
+	var diff = (player.global_position - global_position)
+	if diff.length() == 0:
+		animations.play("idle")
+	elif abs(direction.x) > abs(direction.y):
+	# More horizontal
+		if direction.x > 0:
+			animations.play("run_right")
+		else:
+			animations.play("run_left")
+	else:
+	# More vertical
+		if direction.y > 0:
+			animations.play("run_down")
+		else:
+			animations.play("run_up")

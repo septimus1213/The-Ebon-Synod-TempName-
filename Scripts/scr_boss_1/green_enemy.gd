@@ -25,7 +25,7 @@ var wander_timer = 0.0
 var wander_time = 2.0
 
 @onready var hurtsound: AudioStreamPlayer2D = $"../SoundsEnemy/EnemyHurt"
-
+@onready var animations: AnimatedSprite2D = $AnimatedSprite2D
 enum State {
 	WANDERING,
 	CHASING,
@@ -69,6 +69,20 @@ func _physics_process(delta):
 			move_and_slide()
 			if distance_to_player <= detection_range:
 				current_state = State.CHASING
+			elif wander_direction == Vector2.ZERO:
+				animations.play("idle")
+			elif abs(wander_direction.x) > abs(wander_direction.y):
+			# More horizontal
+				if wander_direction.x > 0:
+					animations.play("run_right")
+				else:
+					animations.play("run_left")
+			else:
+			# More vertical
+				if wander_direction.y > 0:
+					animations.play("run_down")
+				else:
+					animations.play("run_up")
 		
 		State.CHASING:
 			var direction = (player.global_position - global_position).normalized()
@@ -80,7 +94,23 @@ func _physics_process(delta):
 			elif distance_to_player > detection_range * 1.5:
 				current_state = State.WANDERING
 				randomize_wander_direction()
-		
+			
+			var diff = (player.global_position - global_position)
+			if diff.length() == 0:
+				animations.play("idle")
+			elif abs(direction.x) > abs(direction.y):
+			# More horizontal
+				if direction.x > 0:
+					animations.play("run_right")
+				else:
+					animations.play("run_left")
+			else:
+			# More vertical
+				if direction.y > 0:
+					animations.play("run_down")
+				else:
+					animations.play("run_up")
+			
 		State.ATTACKING:
 			velocity = Vector2.ZERO
 			if can_attack:
