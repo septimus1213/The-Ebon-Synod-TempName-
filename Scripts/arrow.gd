@@ -2,7 +2,7 @@ extends Area2D
 
 @export var speed = 600.0
 @export var lifetime = 5.0
-@export var damage = 15
+@export var damage = 200
 
 var direction = Vector2.ZERO
 
@@ -24,7 +24,7 @@ func set_direction(dir: Vector2):
 
 func _on_body_entered(body):
 	print("Arrow hit SOMETHING: ", body.name)
-	if body.is_in_group("edible") and body.has_method("take_damage"):
+	if (body.is_in_group("edible") or body.is_in_group("boss")) and body.has_method("take_damage"):
 		print("ARROW HIT: ", body.name)
 		body.take_damage(damage)
 		queue_free()

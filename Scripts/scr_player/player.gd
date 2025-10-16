@@ -24,7 +24,7 @@ var current_health = 300
 enum Weapon { NONE, SWORD, BOW }
 var current_weapon = Weapon.NONE
 var can_shoot_bow = true
-@export var bow_cooldown = 3
+@export var bow_cooldown = 1
 
 # Dash
 var is_dash_ready = true
@@ -276,7 +276,7 @@ func attack_sword():
 
 
 func _on_sword_hit(body):
-	if body.is_in_group("edible") and body.has_method("take_damage"):
+	if (body.is_in_group("edible") or body.is_in_group("boss") ) and body.has_method("take_damage"):
 		print("SWORD HIT: ", body.name)
 		body.take_damage(sword_damage)
 		
