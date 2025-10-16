@@ -1,25 +1,155 @@
-[gd_scene load_steps=8 format=3 uid="uid://dwwjk0o6pomax"]
+[gd_scene load_steps=23 format=3 uid="uid://dwwjk0o6pomax"]
 
 [ext_resource type="Script" uid="uid://bxksg8fbvi0j1" path="res://Scripts/scr_boss_1/boss1_control.gd" id="1_iv5oi"]
 [ext_resource type="Texture2D" uid="uid://bd7855bndutwm" path="res://Assets/sprites_boss1/boss_idle.png" id="2_o831q"]
-[ext_resource type="Texture2D" uid="uid://d3cr0jcxpj6pk" path="res://Assets/sprites_boss1/boss_roar.png" id="3_tyqv6"]
-[ext_resource type="Texture2D" uid="uid://cv1sptubl4smb" path="res://Assets/sprites_boss1/boss_slam.png" id="4_vioas"]
-[ext_resource type="Texture2D" uid="uid://bqhihga6umabb" path="res://Assets/sprites_boss1/boss_feast.png" id="5_xtf87"]
-[ext_resource type="Texture2D" uid="uid://d17hwqiy62dns" path="res://Assets/sprites_boss1/boss_stunned.png" id="6_a51b5"]
+[ext_resource type="Script" uid="uid://dc0xun28e6xao" path="res://canvas_layer.gd" id="5_mgxgb"]
+[ext_resource type="Texture2D" uid="uid://cwp4dglg43h78" path="res://Assets/sprites_boss1/Boss_walk-Sheet.png" id="7_tyqv6"]
+[ext_resource type="Texture2D" uid="uid://cyyque5cqw04" path="res://Assets/sprites_boss1/Boss_slam-Sheet.png" id="8_vioas"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_my2bk"]
 size = Vector2(128, 128)
 
-[node name="Boss_1" type="CharacterBody2D"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_xtf87"]
+atlas = ExtResource("7_tyqv6")
+region = Rect2(2, 0, 125, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a51b5"]
+atlas = ExtResource("7_tyqv6")
+region = Rect2(131, 0, 125, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_my2bk"]
+atlas = ExtResource("7_tyqv6")
+region = Rect2(260, 0, 125, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ushsi"]
+atlas = ExtResource("7_tyqv6")
+region = Rect2(389, 0, 125, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uatvb"]
+atlas = ExtResource("7_tyqv6")
+region = Rect2(518, 0, 125, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d4ccf"]
+atlas = ExtResource("7_tyqv6")
+region = Rect2(647, 0, 125, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l0rqu"]
+atlas = ExtResource("7_tyqv6")
+region = Rect2(776, 0, 125, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_breqa"]
+atlas = ExtResource("7_tyqv6")
+region = Rect2(905, 0, 125, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_msiap"]
+atlas = ExtResource("8_vioas")
+region = Rect2(1, 0, 126, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_22orp"]
+atlas = ExtResource("8_vioas")
+region = Rect2(130, 0, 126, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fmov3"]
+atlas = ExtResource("8_vioas")
+region = Rect2(259, 0, 126, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rrrre"]
+atlas = ExtResource("8_vioas")
+region = Rect2(388, 0, 126, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pghr6"]
+atlas = ExtResource("8_vioas")
+region = Rect2(517, 0, 126, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wlf2x"]
+atlas = ExtResource("8_vioas")
+region = Rect2(646, 0, 126, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d4c1b"]
+atlas = ExtResource("8_vioas")
+region = Rect2(775, 0, 126, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_r0ouw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xtf87")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a51b5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_my2bk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ushsi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uatvb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d4ccf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l0rqu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_breqa")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_msiap")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_22orp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fmov3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rrrre")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pghr6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wlf2x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d4c1b")
+}],
+"loop": false,
+"name": &"slam",
+"speed": 5.0
+}]
+
+[node name="Boss_1" type="CharacterBody2D" node_paths=PackedStringArray("animated_sprite")]
 script = ExtResource("1_iv5oi")
-sprite_idle = ExtResource("2_o831q")
-sprite_roar = ExtResource("3_tyqv6")
-sprite_slam = ExtResource("4_vioas")
-sprite_feast = ExtResource("5_xtf87")
-sprite_stunned = ExtResource("6_a51b5")
+animated_sprite = NodePath("AnimatedSprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
 texture = ExtResource("2_o831q")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_my2bk")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_r0ouw")
+animation = &"slam"
+frame = 6
+frame_progress = 1.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("5_mgxgb")

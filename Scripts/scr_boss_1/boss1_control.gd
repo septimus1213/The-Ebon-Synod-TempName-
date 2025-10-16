@@ -7,13 +7,12 @@ enum BossState {
 	FEAST,     
 	STUNNED    
 }
+@export var animated_sprite: AnimatedSprite2D
 
-# Textures
-@export var sprite_idle: Texture2D
-@export var sprite_roar: Texture2D
-@export var sprite_slam: Texture2D
-@export var sprite_feast: Texture2D
-@export var sprite_stunned: Texture2D
+@export var max_health = 10000
+var current_health = 10000
+var is_invulnerable = false
+var health_bar_height = 20
 
 # Enemies
 @export var red_enemy_scene: PackedScene
@@ -30,12 +29,17 @@ enum BossState {
 @export var slam_damage = 30
 
 var slam_started = false
-var slam_spike_positions = [] 
+var slam_spikes_spawned = false
+var slam_spike_positions = []
+var camera: Camera2D
+var shake_timer = 0.0
+var shake_intensity = 0.0
+var camera_original_offset = Vector2.ZERO
 
 # State
 var current_state = BossState.IDLE
 var state_timer = 0.0
-var attack_cooldown = 3.0
+var attack_cooldown = 2.0
 
 # Feast tracking
 var feast_started = false
@@ -45,10 +49,25 @@ var danger_tiles = []
 
 func _ready():
 	add_to_group("boss")
+	current_health = max_health
+	camera = get_viewport().get_camera_2d()
+	if camera:
+		camera_original_offset = camera.offset
 	change_state(BossState.IDLE)
 
 func _physics_process(delta):
 	state_timer -= delta
+	
+	if shake_timer > 0:
+		shake_timer -= delta
+		var shake_amount = shake_intensity * (shake_timer / 0.3)  # decay
+		if camera:
+			camera.offset = camera_original_offset + Vector2(
+				randf_range(-shake_amount, shake_amount),
+				randf_range(-shake_amount, shake_amount)
+			)
+	elif camera:
+		camera.offset = camera_original_offset
 	
 	match current_state:
 		BossState.IDLE:
@@ -61,6 +80,10 @@ func _physics_process(delta):
 			handle_feast()  
 		BossState.STUNNED:
 			handle_stunned()
+			
+	queue_redraw() 
+			
+
 
 # ===== STATE HANDLERS =====
 
@@ -79,13 +102,15 @@ func handle_slam():
 	# Show danger tiles at start
 	if not slam_started:
 		slam_started = true
+		slam_spikes_spawned = false  # Reset spike flag
 		show_slam_danger_tiles()
 	
-	# Spikes hit at warning time
-	if state_timer <= (1.5 - slam_warning_time) and slam_spike_positions.size() > 0:
+	# Spikes hit near end of animation (one frame before last)
+	if not slam_spikes_spawned and state_timer <= slam_warning_time:
 		spawn_slam_spikes()
-		hide_danger_tiles()  # reuse from feast
+		hide_danger_tiles()
 		slam_spike_positions.clear()
+		slam_spikes_spawned = true  # Prevent retriggering
 	
 	# End slam
 	if state_timer <= 0:
@@ -128,6 +153,11 @@ func spawn_slam_spikes():
 		
 		# Spawn visual spike
 		create_spike_visual(spike_pos)
+		apply_screen_shake(0.3, 15.0)
+		
+func apply_screen_shake(duration: float, intensity: float):
+	shake_timer = duration
+	shake_intensity = intensity
 
 func create_spike_visual(pos: Vector2):
 	var spike = Sprite2D.new()
@@ -217,7 +247,7 @@ func consume_entities():
 	for entity in entities:
 		if is_in_danger_zone(entity.global_position):
 			print("ATE ENEMY - BOSS HEALS!")
-			# heal_boss(50)  # TODO: when boss has HP
+			heal(100)
 			entity.queue_free()
 
 func is_in_danger_zone(pos: Vector2) -> bool:
@@ -231,7 +261,8 @@ func is_in_danger_zone(pos: Vector2) -> bool:
 
 func summon_enemies():
 	var colors = ["red", "green", "blue"]
-	var num_enemies = randi() % 3 + 1
+	var num_enemies = randi_range(3,6)
+	
 	
 	for i in range(num_enemies):
 		var color = colors[randi() % colors.size()]
@@ -263,32 +294,84 @@ func summon_enemies():
 # ===== STATE MANAGEMENT =====
 
 func change_state(new_state):
+	slam_started = false
+	feast_started = false
 	current_state = new_state
 	
 	match new_state:
 		BossState.IDLE:
-			sprite.texture = sprite_idle
+			play_animation("idle")
 			state_timer = attack_cooldown
 		BossState.ROAR:
-			sprite.texture = sprite_roar
-			state_timer = 2.0
+			play_animation("roar")
+			state_timer = get_animation_length("roar")
 		BossState.SLAM:
-			sprite.texture = sprite_slam
-			state_timer = 1.5
+			play_animation("slam")
+			state_timer = get_animation_length("slam") + slam_warning_time
 		BossState.FEAST:
-			sprite.texture = sprite_feast
-			state_timer = 4.0
+			play_animation("feast")
+			state_timer = get_animation_length("feast")
 		BossState.STUNNED:
-			sprite.texture = sprite_stunned
-			state_timer = 3.0
+			play_animation("stunned")
+			state_timer = get_animation_length("stunned")
+			
+func play_animation(anim_name: String):
+	if not animated_sprite:
+		return
+	
+	# Check if animation exists
+	if animated_sprite.sprite_frames.has_animation(anim_name):
+		animated_sprite.play(anim_name)
+		animated_sprite.set_frame_and_progress(0, 0.0)  # Start from beginning
+	else:
+		# Fallback to idle if animation missing
+		if animated_sprite.sprite_frames.has_animation("idle"):
+			animated_sprite.play("idle")
+			
+func get_animation_length(anim_name: String) -> float:
+	if not animated_sprite or not animated_sprite.sprite_frames:
+		return 2.0
+	
+	if not animated_sprite.sprite_frames.has_animation(anim_name):
+		return 2.0 
+	
+	var frames = animated_sprite.sprite_frames.get_frame_count(anim_name)
+	var fps = animated_sprite.sprite_frames.get_animation_speed(anim_name)
+	
+	if fps <= 0:
+		return 2.0 
+	
+	return frames / fps
 
-# ===== HEALTH (for later) =====
+func take_damage(amount):
+	if is_invulnerable:
+		return
+	
+	current_health -= amount
+	current_health = max(0, current_health)
+	
+	print("Boss took ", amount, " damage! HP: ", current_health, "/", max_health)
+	
+	# Brief invulnerability to prevent multi-hit from one sword swing
+	is_invulnerable = true
+	var timer = get_tree().create_timer(0.1)
+	timer.timeout.connect(func(): is_invulnerable = false)
+	
+	# Flash red
+	if animated_sprite:
+		animated_sprite.modulate = Color.RED
+		var flash_timer = get_tree().create_timer(0.1)
+		flash_timer.timeout.connect(func(): animated_sprite.modulate = Color.WHITE)
+	
+	if current_health <= 0:
+		die()
 
-# func take_damage(amount):
-# 	print("Boss took ", amount, " damage!")
-# 	# TODO: subtract from boss health
-# 	# TODO: die when health reaches 0
+func die():
+	print("BOSS DEFEATED!")
+	# TODO: Victory screen, next boss, whatever
+	queue_free()
 
-# func heal(amount):
-# 	print("Boss healed ", amount, " HP!")
-# 	# TODO: add to boss health (capped at max)
+func heal(amount):
+	current_health += amount
+	current_health = min(current_health, max_health)
+	print("Boss healed ", amount, " HP! Now at: ", current_health, "/", max_health)
