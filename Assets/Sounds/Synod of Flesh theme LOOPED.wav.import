@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://1xymigoah3u1"
+path="res://.godot/imported/Synod of Flesh theme LOOPED.wav-665ca2bea12a551ff5181eef1d1ffd03.sample"
+
+[deps]
+
+source_file="res://Assets/Sounds/Synod of Flesh theme LOOPED.wav"
+dest_files=["res://.godot/imported/Synod of Flesh theme LOOPED.wav-665ca2bea12a551ff5181eef1d1ffd03.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

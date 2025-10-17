@@ -1,26 +1,26 @@
 [gd_scene load_steps=3 format=3 uid="uid://bi4fhapld1sdq"]
 
 [ext_resource type="Script" uid="uid://cs0ovytw7nj2f" path="res://Scripts/start_screen.gd" id="1_i8r30"]
-[ext_resource type="Texture2D" uid="uid://b3twh1s02xubr" path="res://Assets/Player And Attributes/Startscreen.jpg" id="2_ainjc"]
+[ext_resource type="Texture2D" uid="uid://ejvuxmodujnx" path="res://Assets/title_screeccn.png" id="2_ainjc"]
 
 [node name="StartScreen" type="Node2D"]
 script = ExtResource("1_i8r30")
-
-[node name="MenuButton" type="MenuButton" parent="."]
-z_index = 1
-offset_left = -63.0
-offset_top = -135.0
-offset_right = 71.0
-offset_bottom = -93.0
-theme_override_font_sizes/font_size = 24
-text = "Start game"
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-1.0000191, -2.1337662)
-scale = Vector2(1.1191406, 0.63255125)
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_ainjc")
+
+[node name="MenuButton" type="MenuButton" parent="."]
+z_index = 1
+offset_left = 157.0
+offset_top = 53.0
+offset_right = 505.0
+offset_bottom = 248.0
+theme_override_font_sizes/font_size = 24
+text = "PLAY GAME"
 
 [connection signal="mouse_entered" from="MenuButton" to="." method="_on_menu_button_mouse_entered"]
 [connection signal="mouse_exited" from="MenuButton" to="." method="_on_menu_button_mouse_exited"]

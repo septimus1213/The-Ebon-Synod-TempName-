@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://542si6uaki6q" path="res://Assets/sprites_boss1/BlueAnimations/Blue_up.png" id="6_sgaid"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_72t8a"]
-size = Vector2(32, 32)
+size = Vector2(16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_72t8a"]
 atlas = ExtResource("3_xr2dr")
@@ -180,6 +180,7 @@ animations = [{
 }]
 
 [node name="blue_enemy" type="CharacterBody2D" groups=["edible"]]
+texture_filter = 1
 script = ExtResource("1_v1mpc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

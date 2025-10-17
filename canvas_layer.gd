@@ -11,13 +11,16 @@ func _process(delta):
 	queue_redraw()
 
 func _draw():
-	if not boss or boss.current_health <= 0:
+	# Check boss exists AND has valid health before accessing it
+	if not boss or not is_instance_valid(boss):
+		return
+	
+	if boss.current_health <= 0:
 		return
 	
 	var screen_width = get_viewport_rect().size.x
 	var screen_height = get_viewport_rect().size.y
 	
-	# Health bar settings
 	var bar_width = screen_width - 20
 	var bar_height = 25
 	var bar_x = 10
@@ -31,5 +34,5 @@ func _draw():
 	var fill_width = bar_width * health_percent
 	draw_rect(Rect2(bar_x, bar_y, fill_width, bar_height), Color(0.6, 0, 0), true)
 	
-	# Border (white)
+	# Border (brown)
 	draw_rect(Rect2(bar_x, bar_y, bar_width, bar_height), Color.BROWN, false, 3)

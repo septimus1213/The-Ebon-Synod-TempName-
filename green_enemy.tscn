@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://6ylq53b6r7vv" path="res://Assets/sprites_boss1/GreenAnimations/Green_up.png" id="5_hd5to"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2fnn4"]
-size = Vector2(32, 32)
+size = Vector2(16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cgrd6"]
 atlas = ExtResource("2_dclt4")
@@ -129,8 +129,8 @@ animations = [{
 }]
 
 [node name="green_enemy" type="CharacterBody2D" groups=["edible"]]
+texture_filter = 1
 script = ExtResource("1_2fnn4")
-attack_range = 32.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_2fnn4")

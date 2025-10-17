@@ -10,11 +10,11 @@ var knockback_duration = 0.15
 @export var detection_range = 150.0
 @export var explosion_range = 80.0
 @export var explosion_delay = 1.0
-@export var explosion_damage = 75
-@export var max_health = 30
+@export var explosion_damage = 40
+@export var max_health = 210
 
 var player = null
-var current_health = 30
+var current_health = 210
 var show_healthbar = false
 var healthbar_timer = 0.0
 

@@ -7,14 +7,14 @@ var knockback_time = 0.0
 var knockback_duration = 0.15
 
 @export var chase_speed = 100.0
-@export var contact_damage = 30
-@export var contact_range = 30
+@export var contact_damage = 10
+@export var contact_range = 18
 @export var damage_cooldown = 1.0
-@export var max_health = 50
+@export var max_health = 200
 
 var player = null
 var able_to_do_damage = true
-var current_health = 50
+var current_health = 200
 var show_healthbar = false
 var healthbar_timer = 0.0
 

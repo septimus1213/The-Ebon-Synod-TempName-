@@ -1,0 +1,46 @@
+[gd_scene load_steps=7 format=3 uid="uid://cvhkxg7cbmh26"]
+
+[ext_resource type="Texture2D" uid="uid://dpqvkonwttjkn" path="res://Assets/spikes-Sheet.png" id="1_2m7j6"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_471ci"]
+atlas = ExtResource("1_2m7j6")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y5a33"]
+atlas = ExtResource("1_2m7j6")
+region = Rect2(17, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1nvjy"]
+atlas = ExtResource("1_2m7j6")
+region = Rect2(34, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y6jrq"]
+atlas = ExtResource("1_2m7j6")
+region = Rect2(51, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8tnl8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_471ci")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y5a33")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1nvjy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y6jrq")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Spikyspikes" type="Node2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_8tnl8")
+frame_progress = 0.49582222

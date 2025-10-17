@@ -9,11 +9,11 @@ var knockback_duration = 0.15
 @export var wander_speed = 50.0
 @export var chase_speed = 100.0
 @export var detection_range = 128.0
-@export var attack_range = 64.0
+@export var attack_range = 30.0
 @export var attack_cooldown = 3
-@export var max_health = 100
+@export var max_health = 500
 
-var current_health = 100
+var current_health = 500
 var show_healthbar = false
 var healthbar_timer = 0.0
 var player = null
@@ -176,7 +176,7 @@ func attack():
 	var distance = global_position.distance_to(player.global_position)
 	if distance <= attack_range:
 		print("SWORD HIT!")
-		player.take_damage(50)
+		player.take_damage(10)
 
 func randomize_wander_direction():
 	var angle = randf() * TAU

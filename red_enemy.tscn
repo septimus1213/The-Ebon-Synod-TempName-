@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bobvg4y2w8731" path="res://Assets/sprites_boss1/RedAnimations/Red_Up.png" id="5_j0yf0"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ixsqt"]
-size = Vector2(32, 32)
+size = Vector2(16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ybw81"]
 atlas = ExtResource("2_wkmlx")
@@ -129,6 +129,7 @@ animations = [{
 }]
 
 [node name="red_enemy" type="CharacterBody2D" groups=["edible"]]
+texture_filter = 1
 script = ExtResource("1_ixsqt")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
